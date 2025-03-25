@@ -1,35 +1,79 @@
+// import { gsap } from "gsap";
+
 class MusicPlayer {
 
   constructor() {
+    // this.gap = 20
+    // this.scrollY = 0
     this.tracks = [
-      { id: 1, title: "Lose control", url: "LoseControl.mp3", img: "LoseControl.png" },
-      { id: 2, title: "Beggin'", url: "Beggin.mp3", img: "beggin.png" },
-      { id: 3, title: "Lying To you", url: "LyingToYou.mp3", img: "LyingToYou.png" },
+      { id: 1, title: "Lose control", url: "LoseControl.mp3", img: "LoseControl.png", artist : "Amaria", album: "Bittersweet"},
+      { id: 2, title: "Beggin'" , url: "Beggin.mp3", img: "beggin.png", artist: "Amaria", album: "Free Fallin'"},
+      { id: 3, title: "Lying To you", url: "LyingToYou.mp3", img: "LyingToYou.png", artist: "Amaria", album: "All for you" },
     ];
     this.currentTrackIndex = 0;
+    this.oldElementImage = '';
     this.audio = new Audio();
     this.isPlaying = false;
     this.volume = 0.75;
     this.init();
+    // this.setupImages();
+    // this.updatePosition();
   }
 
-  // Explication : Ici, on est en dehors du constructor, on y défini toutes les fonctions que la classe possède.
+  // setupImages(){
+  //   this.allItems = document.querySelectorAll("#playlist");
+  //   this.coverSize = this.allItems[0].getBoundingClientRect().width;
+  //   this.containerSize = this.allItems.length * (this.coverSize + this.gap)
+  //   console.log(this.allItems.length)
+  // }
+
+  // updatePosition(){
+  //   this.tracks.forEach((track, index) => {
+  //     track.elementImage.style.left = `${(index*(this.coverSize+this.gap)+this.scrollY+this.containerSize) % this.containerSize}px`
+  //   })
+  // }
 
   init() {
     this.cacheDOM();
     this.bindEvents();
     // this.setupDraggable();
+    this.createAlbums();
     this.loadTrack();
+    // this.initScroll();
   }
-  // Bug: Regarde aussi la façon dont on déclare les variables/membres de classe. Rappelle toi que les "const" sont limité à leur portée de bloc (donc ici, à la fonction).
+  // Rappelle toi que les "const" sont limité à leur portée de bloc (donc ici, à la fonction).
   // Alors que les membres de classes (this.truc) sont appelable n'importe ou dans la classe.
+
+  initScroll(){
+    document.addEventListener("wheel", this.handleScroll.bind(this));
+  }
+
+  handleScroll(e){
+    this.scrollY += e.wheelDeltaY;
+    this.updatePosition();
+    console.log(this.scrollY);
+  }
+
+  createAlbums() {
+    this.tracks.forEach(track => {
+      const img = document.createElement("img");
+      const li = document.createElement("li"); 
+      img.src = track.img;
+      li.appendChild(img);
+      this.playlist.appendChild(li);
+      track.elementImage = img;
+    });
+  }
+
   cacheDOM() {
     this.playlist = document.querySelector("#playlist");
     this.playButton = document.querySelector("#play");
     this.nextButton = document.querySelector("#next");
     this.prevButton = document.querySelector("#prev");
     this.trackTitle = document.querySelector("#track-title");
-    this.trackImage = document.querySelector("#url_img");
+    // this.trackImage = document.querySelector("#url_img");
+    this.trackArtist = document.querySelector("#track-artist");
+    this.trackAlbum = document.querySelector("#track-album");
   }
 
   bindEvents() {
@@ -44,18 +88,26 @@ class MusicPlayer {
       console.error("Index de piste invalide");
       return;
     }
+
+    if(this.oldElementImage) this.oldElementImage.classList.remove("albumL");
+    this.tracks[this.currentTrackIndex].elementImage.classList.add("albumL");
+    this.oldElementImage = this.tracks[this.currentTrackIndex].elementImage;
+
     this.audio.src = this.tracks[this.currentTrackIndex].url;
     this.trackTitle.textContent = this.tracks[this.currentTrackIndex].title;
-    this.trackImage.src = this.tracks[this.currentTrackIndex].img;
-    // this.animateTitle();
+    this.trackArtist.textContent = this.tracks[this.currentTrackIndex].artist;
+    this.trackAlbum.textContent = this.tracks[this.currentTrackIndex].album;
   }
 
   togglePlay() {
-    if (this.isPlaying) { 
+    if (this.isPlaying) {     
+      this.isPlaying = false 
       this.audio.pause();
     } else {
+      this.isPlaying = true
       this.audio.play().catch(err => console.error("Erreur de lecture :", err));
     }
+  console.log(this.isPlaying)
   }
 
   // Challenge : les fonction Next et previous track ont sensiblement le même traitement. En code, on cherche toujours à ne pas dupliquer de la logique, mais plutôt à factoriser.
@@ -77,11 +129,6 @@ class MusicPlayer {
 }
 
 new MusicPlayer();
-
-
-// BUG : Ici, on est en dehors de la classe Music Player. 
-// On peut donc l'instancier avec le mot clef New, pour qu'elle soit utilisée.
-
 
 
 // Fonctionnalités : Draggable

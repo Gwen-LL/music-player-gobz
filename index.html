@@ -1,21 +1,31 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lecteur de Playlist</title>
     <link rel="stylesheet" href="./src/style.css">
 </head>
+
 <body>
-    <h1>Lecteur de Playlist</h1>
-    <img src="" id="url_img" alt="">
-    <div>
-        <button id="prev">⏮</button>
-        <button id="play">▶️</button>
-        <button id="next">⏭</button>
+    <h1>Music player</h1>
+    <div class="container">
+        <div class="container-album">
+            <ul id="playlist"></ul>
+            <h2 id="track-album">Nom de l'album</h2>
+        </div>
+        <div class="container-titleArtist">
+            <h2 id="track-title">Titre du morceau</h2>
+            <p id="track-artist">Nom de l'artiste</p>
+        </div>
+        <div>
+            <button id="prev"> <span class="btn_prev"></span> </button>
+            <button id="play"> <span class="btn_play"></span></button>
+            <button id="next"> <span class="btn_next"></span></button>
+        </div>
     </div>
-    <h2 id="track-title">Titre du morceau</h2>
-    <ul id="playlist"></ul>
     <script src="./src/main.js"></script>
 </body>
+
 </html>
