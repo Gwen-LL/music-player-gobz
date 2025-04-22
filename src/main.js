@@ -44,15 +44,15 @@ class MusicPlayer {
   // Rappelle toi que les "const" sont limité à leur portée de bloc (donc ici, à la fonction).
   // Alors que les membres de classes (this.truc) sont appelable n'importe ou dans la classe.
 
-  initScroll(){
-    document.addEventListener("wheel", this.handleScroll.bind(this));
-  }
+  // initScroll(){
+  //   document.addEventListener("wheel", this.handleScroll.bind(this));
+  // }
 
-  handleScroll(e){
-    this.scrollY += e.wheelDeltaY;
-    this.updatePosition();
-    console.log(this.scrollY);
-  }
+  // handleScroll(e){
+  //   this.scrollY += e.wheelDeltaY;
+  //   this.updatePosition();
+  //   console.log(this.scrollY);
+  // }
 
   createAlbums() {
     this.tracks.forEach(track => {
@@ -68,6 +68,7 @@ class MusicPlayer {
   cacheDOM() {
     this.playlist = document.querySelector("#playlist");
     this.playButton = document.querySelector("#play");
+    this.playButtonSpan = document.querySelector("#playSpan");
     this.nextButton = document.querySelector("#next");
     this.prevButton = document.querySelector("#prev");
     this.trackTitle = document.querySelector("#track-title");
@@ -103,9 +104,13 @@ class MusicPlayer {
     if (this.isPlaying) {     
       this.isPlaying = false 
       this.audio.pause();
+      this.playButtonSpan.classList.remove("btn_pause");
+      this.playButtonSpan.classList.add("btn_play");
     } else {
       this.isPlaying = true
       this.audio.play().catch(err => console.error("Erreur de lecture :", err));
+      this.playButtonSpan.classList.remove("btn_play");
+      this.playButtonSpan.classList.add("btn_pause");
     }
   console.log(this.isPlaying)
   }
