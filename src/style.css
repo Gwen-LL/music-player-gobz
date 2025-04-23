@@ -3,12 +3,13 @@
 
 body {
   font-family: Arial, sans-serif;
-  padding: 20px;
   background: linear-gradient(#E4C8C8, #2A030D);
   padding: 8px 24px;
   text-align: center;
   height: 100vh;
+  box-sizing: border-box;
   align-items: center;
+  margin: 0;
 }
 
 @media only screen and (min-width: 600px) {  
@@ -94,7 +95,6 @@ button {
   padding-right: 20px;
   align-items: center;
   border: solid 0.5px white;
-  width: fit-content;
   min-width: 360px;
 }
 
@@ -126,6 +126,8 @@ img {
   border-radius: 40px;
   border: 1px solid #ffffff;
   max-width: 100%;
+
+  transition: all 0.5s;
 
   /* position: absolute;
   left: 0; */
@@ -189,4 +191,48 @@ li:hover{
 
 .container-playBtn {
   display: flex;
+}
+
+.container-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 700px; 
+  width: 100%;
+}
+
+#slider-container {
+  flex: 1;
+  height: 3px;
+  background: #F8E4E4;
+  position: relative;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+}
+
+#slider-container:hover{
+  background: #ffffff;
+  height: 6px;
+}
+
+#progress-bar {
+  height: 100%;
+  width: 0%;
+  background-color: #2A030D;
+  border-radius: 5px;
+}
+
+#current-time,
+#duration{
+  font-family: "Fugaz One", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  color: #F8E4E4;
+  font-size: small;
+}
+
+.typeSplit{
+  overflow: hidden;
 }

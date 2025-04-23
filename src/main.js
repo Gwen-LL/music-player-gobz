@@ -1,5 +1,6 @@
 import { gsap } from "gsap";
 import { SplitText } from "gsap-trial/SplitText";
+
 gsap.registerPlugin(SplitText);
 
 class MusicPlayer {
@@ -19,6 +20,7 @@ class MusicPlayer {
     this.isPlaying = false;
     this.volume = 0.75;
     this.init();
+    const lenis = new Lenis();
   }
 
   init() {
@@ -50,6 +52,10 @@ class MusicPlayer {
     this.trackTitle = document.querySelector("#track-title");
     this.trackArtist = document.querySelector("#track-artist");
     this.trackAlbum = document.querySelector("#track-album");
+    this.slider = document.querySelector("#slider-container");
+    this.progressBar = document.querySelector("#progress-bar");
+    this.currentTimeText = document.querySelector("#current-time");
+    this.durationText = document.querySelector("#duration");
   }
 
   bindEvents() {
@@ -61,6 +67,8 @@ class MusicPlayer {
       track.elementImage.addEventListener("click", (event) => this.handleClickImage(event));
       track.elementImage.setAttribute("data-id", track.id);
     });
+    this.audio.addEventListener("timeupdate", () => this.updateProgress());
+    this.slider.addEventListener("click", (e) => this.seekTrack(e));
   }
 
   handleClickImage(event) {
@@ -86,6 +94,9 @@ class MusicPlayer {
     this.trackTitle.textContent = this.tracks[this.currentTrackIndex].title;
     this.trackArtist.textContent = this.tracks[this.currentTrackIndex].artist;
     this.trackAlbum.textContent = this.tracks[this.currentTrackIndex].album;
+    this.audio.addEventListener("loadedmetadata", () => {
+      this.updateProgress(); // Pour afficher direct la durée correcte
+    });
   }
 
   togglePlay() {
@@ -120,16 +131,49 @@ class MusicPlayer {
   }
 
   textSplit() {
-    var typeSplit = new SplitText('#track-album', {type: 'lines'})
-    console.log(typeSplit)
+    var typeSplit = new SplitText('#track-album', { type: 'lines' })
+    const trackAlbumSplit = new SplitText ('#track-album', { type: 'lines' })
     gsap.from(typeSplit.lines, {
       y: '100%',
       opacity: 1,
       duration: 0.5,
       ease: 'power1.out',
       stagger: 0.1,
-      
+
     })
+  }
+  updateProgress() {
+    const { currentTime, duration } = this.audio;
+
+    // Met à jour le temps actuel si connu
+    if (!isNaN(currentTime)) {
+      this.currentTimeText.textContent = this.formatTime(currentTime);
+    }
+
+    // Met à jour la durée totale et la barre si la durée est connue
+    if (!isNaN(duration)) {
+      this.durationText.textContent = this.formatTime(duration);
+      const percent = (currentTime / duration) * 100;
+      this.progressBar.style.width = `${percent}%`;
+    } else {
+      // Sinon, reset la barre et la durée
+      this.durationText.textContent = "0:00";
+      this.progressBar.style.width = `0%`;
+    }
+  }
+
+  seekTrack(e) {
+    const rect = this.slider.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const percent = clickX / rect.width;
+    this.audio.currentTime = this.audio.duration * percent;
+  }
+
+  formatTime(time) {
+    if (isNaN(time)) return "0:00";
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60).toString().padStart(2, "0");
+    return `${minutes}:${seconds}`;
   }
 }
 
